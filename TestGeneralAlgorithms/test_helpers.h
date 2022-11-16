@@ -15,6 +15,18 @@ void fill(M& m, float v)
 }
 
 template<typename M>
+void fillRand(M& m, float min = 0.f, float max = 1.f)
+{
+	for (int r = 0; r < m.rows; ++r)
+	{
+		for (int c = 0; c < m.cols; ++c)
+		{
+			m(r, c) = min + (max - min) * (rand() % 10000) / 10000.f;
+		}
+	}
+}
+
+template<typename M>
 void assertEqual(M& m1, M& m2)
 {
 	for (int r = 0; r < m1.rows; ++r)

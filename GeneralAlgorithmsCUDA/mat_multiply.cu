@@ -2,7 +2,7 @@
 #include <device_launch_parameters.h>
 
 #include "mat_multiply.h"
-#include "matrix_helpers.cuh"
+#include "matrix_device.h"
 #include <memory>
 
 using namespace OmniSense;
@@ -54,6 +54,17 @@ static __global__ void MatMulKernel(mat_fr A, mat_fr B, mat_fr C, int blockSize)
     C(row + blockRow * blockSize, col + blockCol * blockSize) = Cvalue;
 }
 
+static CUDA_HOST_API int findBlockSize(const mat_fr& elements)
+{
+    if (elements.rows * elements.cols >= 600) {
+        return 12;
+    }
+    if (elements.rows * elements.cols >= 120) {
+        return 8;
+    }
+    return 4;
+}
+
 namespace OmniSense
 {
 namespace CUDA
@@ -62,11 +73,11 @@ namespace General
 {
     void MatMul(const mat_fr A, const mat_fr B, mat_fr C)
     {
-        int blockSize = findBlockSize(C.cols * C.rows);
+        int blockSize = findBlockSize(C);
 
-        auto d_A = toDeviceMemoryWithPadding(A, blockSize, blockSize, true);
-        auto d_B = toDeviceMemoryWithPadding(B, blockSize, blockSize, true);
-        auto d_C = toDeviceMemoryWithPadding(C, blockSize, blockSize, false);
+        auto d_A = toDeviceMemoryPad(A, blockSize, blockSize, true);
+        auto d_B = toDeviceMemoryPad(B, blockSize, blockSize, true);
+        auto d_C = toDeviceMemoryPad(C, blockSize, blockSize, false);
 
         int sharedMemoryNeeded = blockSize * blockSize * 2 * sizeof(float);
 

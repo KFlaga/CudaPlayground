@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
@@ -105,7 +105,7 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_61,sm_61</CodeGeneration>
+      <CodeGeneration>compute_61,sm_61;compute_75,sm_75;compute_86,sm_86</CodeGeneration>
       <NvccCompilation>compile</NvccCompilation>
       <Keep>true</Keep>
       <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
@@ -114,21 +114,35 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CudaLink>
+      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart_static.lib</AdditionalDependencies>
+    </CudaLink>
+    <Lib>
+      <AdditionalDependencies>cudart_static.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CudaToolkitBinDir)/crt</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="binarize.cu" />
     <CudaCompile Include="convolution.cu" />
     <CudaCompile Include="mat_multiply.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="binarize.h" />
     <ClInclude Include="convolution.h" />
     <ClInclude Include="cpp_stuff.h" />
-    <ClInclude Include="matrix_helpers.cuh" />
+    <ClInclude Include="matrix_device.h" />
+    <CudaCompile Include="matrix_device.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClInclude Include="matrix_host.h" />
     <ClInclude Include="mat_multiply.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="cuda_interop.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="binarize.cpp" />
     <ClCompile Include="convolution.cpp" />
     <ClCompile Include="mat_multiply.cpp" />
   </ItemGroup>

@@ -2,13 +2,43 @@
 #include <device_launch_parameters.h>
 
 #include "convolution.h"
-#include "matrix_helpers.cuh"
+#include "matrix_device.h"
 #include <memory>
 
 using namespace OmniSense;
 
-static __global__ void ConvolutionKernel(mat_fr A, mat_fr B, mat_fr C)
+// extern __shared__ float shared_cache[];
+
+static __global__ void ConvolutionKernel_InsideBoundary(mat_fr source, mat_fr block, mat_fr dest, int blockSize)
 {
+    // Assumes dest is inside boundary of source (so dest.rows + block.rows = source.rows)
+
+    // To handle unpadded matrices
+    int row = threadIdx.y + blockIdx.y * blockSize;
+    int col = threadIdx.x + blockIdx.x * blockSize;
+    if (row >= dest.rows || col >= dest.cols) {
+        return;
+    }
+
+    float val = 0;
+    block.forEach([&](int r, int c, float b)
+    {
+        float a = source(row + r, col + c);
+        val += a * b;
+    });
+
+    dest(row, col) = val;
+}
+
+static CUDA_HOST_API int findBlockSize(const mat_fr& elements)
+{
+    if (elements.rows * elements.cols >= 600) {
+        return 12;
+    }
+    if (elements.rows * elements.cols >= 120) {
+        return 8;
+    }
+    return 4;
 }
 
 namespace OmniSense
@@ -17,21 +47,51 @@ namespace CUDA
 {
 namespace General
 {
-    void Convolve(const mat_fr A, const mat_fr B, mat_fr C, ConvolveBoundary boundary)
+    void Convolve(const mat_fr source, const mat_fr block, mat_fr dest, ConvolveBoundary boundary)
     {
-        int blockSize = findBlockSize(C.cols * C.rows);
+        int blockSize = findBlockSize(dest);
 
-        auto d_A = toDeviceMemoryWithPadding(A, blockSize, blockSize, true);
-        auto d_B = toDeviceMemoryWithPadding(B, blockSize, blockSize, true);
-        auto d_C = toDeviceMemoryWithPadding(C, blockSize, blockSize, false);
+        auto d_source = [&]() {
+            if (boundary == ConvolveBoundary::ExtendZero)
+            {
+                return toDeviceMemoryExtendedBlock(source, block, blockSize, blockSize, true);
+            }
+            else
+            {
+                return toDeviceMemoryPad(dest, blockSize, blockSize, true);
+            }
+        }();
 
-        int sharedMemoryNeeded = blockSize * blockSize * 2 * sizeof(float);
+        auto d_block = toDeviceMemory(block, true);
+        auto d_dest = toDeviceMemory(dest, false);
+
+        auto d_dest_mat = [&]()
+        {
+            if (boundary == ConvolveBoundary::ExtendZero)
+            {
+                return d_dest.mat;
+            }
+            else
+            {
+                return d_dest.mat.sub(block.rows/2, block.cols/2, dest.rows - (block.rows - 1) / 2, dest.cols - (block.cols - 1) / 2);
+            }
+        }();
+
+        if (boundary == ConvolveBoundary::Zero)
+        {
+            auto m = d_dest.mat;
+            checkCudaErrors(cudaMemset2D(m.elements, m.stride * sizeof(float), 0, m.cols * sizeof(float), m.rows));
+        }
+        else if (boundary == ConvolveBoundary::Copy)
+        {
+            copyFromHostMemory(source, d_dest.mat);
+        }
 
         dim3 dimBlock(blockSize, blockSize);
-        dim3 dimGrid(d_C.mat.cols / dimBlock.x, d_C.mat.rows / dimBlock.y);
-        ConvolutionKernel KERNEL_ARGS(dimGrid, dimBlock, sharedMemoryNeeded) (d_A, d_B, d_C);
+        dim3 dimGrid(pad(dest.cols, blockSize) / dimBlock.x, pad(dest.rows, blockSize) / dimBlock.y);
+        ConvolutionKernel_InsideBoundary KERNEL_ARGS(dimGrid, dimBlock) (d_source.mat, d_block.mat, d_dest_mat, blockSize);
 
-        copyFromDeviceMemory(d_C.mat, C);
+        copyFromDeviceMemory(d_dest.mat, dest);
     }
 }
 }

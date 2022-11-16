@@ -42,8 +42,10 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\int\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(CudaToolkitLibDir);</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="test_binarize.cpp" />
     <ClCompile Include="test_convolution.cpp" />
     <ClCompile Include="test_matrices.cpp" />
   </ItemGroup>
