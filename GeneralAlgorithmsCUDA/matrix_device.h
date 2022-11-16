@@ -48,6 +48,7 @@ namespace OmniSense
     }
 
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemory(const mat_fr host, bool copy);
+    CUDA_HOST_API DeviceMatrixGuard<mat_fc> toDeviceMemory(const mat_fc host, bool copy);
 
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryPad(const mat_fr host,
                                                                       int blockSizeRows,
@@ -64,4 +65,6 @@ namespace OmniSense
     CUDA_HOST_API void copyFromHostMemory(const mat_fr host, mat_fr& dev);
 
     CUDA_HOST_API void copyFromDeviceMemoryExtendedBlockPad(const mat_fr dev, const mat_fr block, mat_fr& host);
+
+    CUDA_HOST_API void copyFromDeviceMemory(const mat_fc dev, mat_fc& host);
 }

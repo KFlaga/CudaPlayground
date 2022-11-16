@@ -9,6 +9,7 @@ namespace OmniSense
 		namespace General
 		{
 			CUDA_HOST_API void MatMul(const mat_fr A, const mat_fr B, mat_fr C);
+			CUDA_HOST_API void MatMul(const mat_fc A, const mat_fc B, mat_fc C);
 		}
 	}
 

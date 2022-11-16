@@ -78,12 +78,12 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <CudaLink>
-      <AdditionalDependencies>cudart_static.lib</AdditionalDependencies>
+      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
     </CudaLink>
     <Lib>
-      <AdditionalDependencies>cudart_static.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CudaToolkitBinDir)/crt</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -116,11 +116,11 @@
     </ProjectReference>
     <CudaLink>
       <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cudart_static.lib</AdditionalDependencies>
+      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
     </CudaLink>
     <Lib>
-      <AdditionalDependencies>cudart_static.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CudaToolkitBinDir)/crt</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

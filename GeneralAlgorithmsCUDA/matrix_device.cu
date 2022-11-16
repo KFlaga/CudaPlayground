@@ -22,6 +22,24 @@ namespace OmniSense
         return mat_fr{ host.rows, host.cols, (int)(stride/sizeof(float)), data };
     }
 
+    CUDA_HOST_API DeviceMatrixGuard<mat_fc> toDeviceMemory(const mat_fc host, bool copy)
+    {
+        size_t stride;
+        float* data;
+        checkCudaErrors(cudaMallocPitch(&data, &stride, host.rows * sizeof(float), host.cols));
+        if (copy)
+        {
+            checkCudaErrors(cudaMemcpy2D(
+                data, stride,
+                host.elements, host.stride * sizeof(float),
+                host.rows * sizeof(float), host.cols,
+                cudaMemcpyKind::cudaMemcpyHostToDevice
+            ));
+        }
+
+        return mat_fc{ host.rows, host.cols, (int)(stride / sizeof(float)), data };
+    }
+
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryPad(
         const mat_fr host,
         int blockSizeRows,
@@ -105,5 +123,20 @@ namespace OmniSense
             host.cols * sizeof(float), host.rows,
             cudaMemcpyKind::cudaMemcpyDeviceToHost
         ));
+    }
+
+    inline CUDA_HOST_API void copyMemory(const mat_fc from, mat_fc& to, cudaMemcpyKind kind)
+    {
+        checkCudaErrors(cudaMemcpy2D(
+            to.elements, to.stride * sizeof(float),
+            from.elements, from.stride * sizeof(float),
+            to.rows * sizeof(float), to.cols,
+            kind
+        ));
+    }
+
+    CUDA_HOST_API void copyFromDeviceMemory(const mat_fc dev, mat_fc& host)
+    {
+        copyMemory(dev, host, cudaMemcpyKind::cudaMemcpyDeviceToHost);
     }
 }

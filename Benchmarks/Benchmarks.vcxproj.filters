@@ -14,12 +14,21 @@
     <ClInclude Include="nanobench.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bench_helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nanobench.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bench_binarize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bench_multiply.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

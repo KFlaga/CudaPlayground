@@ -5,6 +5,9 @@
 #include "matrix_device.h"
 #include <memory>
 
+#include <cublas.h>
+#include <cublas_v2.h>
+
 using namespace OmniSense;
 
 extern __shared__ float shared_cache[];
@@ -85,6 +88,32 @@ namespace General
         dim3 dimGrid(d_C.mat.cols / dimBlock.x, d_C.mat.rows / dimBlock.y);
         MatMulKernel KERNEL_ARGS(dimGrid, dimBlock, sharedMemoryNeeded) (d_A, d_B, d_C, blockSize);
 
+        copyFromDeviceMemory(d_C.mat, C);
+    }
+
+    void MatMul(const mat_fc A, const mat_fc B, mat_fc C)
+    {
+        static cublasHandle_t ctx = nullptr;
+        if (ctx == nullptr) {
+            cublasCreate_v2(&ctx);
+        }
+
+        auto d_A = toDeviceMemory(A, true);
+        auto d_B = toDeviceMemory(B, true);
+        auto d_C = toDeviceMemory(C, false);
+
+        float a = 1.0f;
+        float b = 0.0f;
+
+        cublasSgemm(ctx,
+                    cublasOperation_t::CUBLAS_OP_N, cublasOperation_t::CUBLAS_OP_N,
+                    C.rows, C.cols, A.cols,
+                    &a,
+                    d_A.mat.elements, d_A.mat.stride,
+                    d_B.mat.elements, d_B.mat.stride,
+                    &b,
+                    d_C.mat.elements, d_C.mat.stride);
+        
         copyFromDeviceMemory(d_C.mat, C);
     }
 }

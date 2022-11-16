@@ -1,97 +1,50 @@
 #include "nanobench.h"
+#include "bench_helpers.h"
+#include <regex>
 
-#include <GeneralAlgorithmsCUDA/matrix.h>
-#include <GeneralAlgorithmsCUDA/binarize.h>
-#include <GeneralAlgorithmsCUDA/mat_multiply.h>
-#include <GeneralAlgorithmsCUDA/matrix_host.h>
-
-
-using namespace OmniSense;
-
-template<typename M>
-void fill(M& m, float v)
+struct BenchmarkEntry
 {
-	for (int r = 0; r < m.rows; ++r)
+	std::string name;
+	std::function<void()> fun;
+};
+
+struct BenchRegistry
+{
+	static BenchRegistry& instance()
 	{
-		for (int c = 0; c < m.cols; ++c)
+		static BenchRegistry r{};
+		return r;
+	}
+
+	std::vector<BenchmarkEntry> benchmarks;
+
+	void run(std::string filter = "")
+	{
+		for (auto& b : benchmarks)
 		{
-			m(r, c) = v;
+			if (filter == "")
+			{
+				b.fun();
+			}
+			else
+			{
+				std::regex r(filter, std::regex_constants::ECMAScript);
+				if (std::regex_search(b.name, r))
+				{
+					b.fun();
+				}
+			}
 		}
 	}
-}
+};
 
-template<typename M>
-void fillRand(M& m, float min = 0.f, float max = 1.f)
+void registerBench(std::string name, std::function<void()> fun)
 {
-	for (int r = 0; r < m.rows; ++r)
-	{
-		for (int c = 0; c < m.cols; ++c)
-		{
-			m(r, c) = min + (max - min) * (rand() % 10000) / 10000.f;
-		}
-	}
+	BenchRegistry::instance().benchmarks.push_back({ name, fun });
 }
 
 
 int main()
 {
-	ankerl::nanobench::Bench b;
-
-	b.title("Binarize")
-		//.relative(true)
-	;
-
-	{
-		auto A = MatrixDynamic<mat_fr>(100, 100);
-		auto C_cuda = MatrixDynamic<mat_fr>(100, 100);
-		auto C_cpu = MatrixDynamic<mat_fr>(100, 100);
-		fillRand(A, 0, 1);
-
-		b.run("Binarize CPU 100x100", [&]()
-		{
-			General::Binarize<mat_fr>(A, C_cpu, 0.5f, 0.0f, 1.0f);
-		});
-
-		b.run("Binarize CUDA 100x100", [&]()
-		{
-			CUDA::General::Binarize(A, C_cuda, 0.5f, 0.0f, 1.0f);
-		});
-	}
-
-	{
-		auto A = MatrixDynamic<mat_fr>(1000, 1000);
-		auto C_cuda = MatrixDynamic<mat_fr>(1000, 1000);
-		auto C_cpu = MatrixDynamic<mat_fr>(1000, 1000);
-		fillRand(A, 0, 1);
-
-		b.run("Binarize CPU 1000x1000", [&]()
-		{
-			General::Binarize<mat_fr>(A, C_cpu, 0.5f, 0.0f, 1.0f);
-		});
-
-		b.run("Binarize CUDA 1000x1000", [&]()
-		{
-			CUDA::General::Binarize(A, C_cuda, 0.5f, 0.0f, 1.0f);
-		});
-	}
-
-	{
-		auto A = MatrixDynamic<mat_fr>(480, 160);
-		auto B = MatrixDynamic<mat_fr>(160, 320);
-		auto C_cuda = MatrixDynamic<mat_fr>(480, 320);
-		auto C_cpu = MatrixDynamic<mat_fr>(480, 320);
-
-		fillRand(A, 0, 1);
-		fillRand(B, 0, 1);
-
-		b.run("MatMul CPU", [&]()
-		{
-			General::MatMul<mat_fr>(A, B, C_cpu);
-		});
-
-		b.run("MatMul CUDA", [&]()
-		{
-			CUDA::General::MatMul(A, B, C_cuda);
-		});
-	}
+	BenchRegistry::instance().run();
 }
