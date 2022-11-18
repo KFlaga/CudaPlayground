@@ -4,13 +4,9 @@ namespace OmniSense
 {
     namespace General
     {
-        // Return convolution A * B
-        // C must have size of A
-        // Elements on boundaries ( of length rows/cols of B/2 )
-        // are not computed and set to 0 or to A(r,c)
-        // Size of B must be odd
+        // Return convolution A * B; C must have size of A
         template<typename MatrixT>
-        void Convolve(const MatrixT A, const MatrixT B, MatrixT C, ConvolveBoundary boundary)
+        void ConvolveShrink(const MatrixT A, const MatrixT B, MatrixT C, ConvolveBoundary boundary)
         {
             int radiusRows = B.rows / 2;
             int radiusCols = B.cols / 2;
@@ -31,6 +27,38 @@ namespace OmniSense
             else if (boundary == ConvolveBoundary::Copy)
             {
                 C.forEachOutsideBoundary(radiusRows, radiusCols, [&](int r, int c, auto& Cval) { Cval = A(r, c); });
+            }
+        }
+
+        template<typename MatrixT>
+        void ConvolveExtendedZero(const MatrixT A, const MatrixT B, MatrixT C)
+        {
+            int radiusRows = B.rows / 2;
+            int radiusCols = B.cols / 2;
+
+            C.forEach([&](int r, int c, auto& Cval) {
+                typename MatrixT::value_type val = 0;
+                B.forEach([&](int dr, int dc, auto Bval) {
+                    int rr = r + dr - radiusRows;
+                    int cc = c + dc - radiusCols;
+                    if (rr >= 0 && rr < A.rows && cc >= 0 && cc < A.cols) {
+                        val += A(rr, cc) * Bval;
+                    }
+                });
+                Cval = val;
+            });
+        }
+
+        template<typename MatrixT>
+        void Convolve(const MatrixT A, const MatrixT B, MatrixT C, ConvolveBoundary boundary)
+        {
+            if (boundary == ConvolveBoundary::ExtendZero)
+            {
+                ConvolveExtendedZero(A, B, C);
+            }
+            else
+            {
+                ConvolveShrink(A, B, C, boundary);
             }
         }
 

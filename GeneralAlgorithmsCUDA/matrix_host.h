@@ -42,7 +42,7 @@ namespace OmniSense
 
 		static MatrixDynamic fromRows(const std::vector<std::vector<typename MatrixT::value_type>>& rowsIn)
 		{
-			MatrixDynamic out(rowsIn.size(), rowsIn[0].size());
+			MatrixDynamic out((int)rowsIn.size(), (int)rowsIn[0].size());
 			out.forEach([&](int r, int c, auto& val)
 			{
 				val = rowsIn[r][c];

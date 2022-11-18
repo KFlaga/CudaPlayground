@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bench_binarize.cpp" />
+    <ClCompile Include="bench_convolution.cpp" />
     <ClCompile Include="bench_multiply.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nanobench.cpp" />

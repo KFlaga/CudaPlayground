@@ -31,5 +31,8 @@
     <ClCompile Include="bench_multiply.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bench_convolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
