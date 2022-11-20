@@ -48,6 +48,7 @@
     <ClCompile Include="test_binarize.cpp" />
     <ClCompile Include="test_convolution.cpp" />
     <ClCompile Include="test_matrices.cpp" />
+    <ClCompile Include="test_median.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeneralAlgorithmsCUDA\GeneralAlgorithmsCUDA.vcxproj">

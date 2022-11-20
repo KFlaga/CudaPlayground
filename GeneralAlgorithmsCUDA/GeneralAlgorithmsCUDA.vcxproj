@@ -129,13 +129,16 @@
     <CudaCompile Include="binarize.cu" />
     <CudaCompile Include="convolution.cu" />
     <CudaCompile Include="mat_multiply.cu" />
+    <CudaCompile Include="median.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binarize.h" />
     <ClInclude Include="convolution.h" />
     <ClInclude Include="cpp_stuff.h" />
     <ClInclude Include="cuda_all.h" />
+    <ClInclude Include="matrix_boundary_condition.h" />
     <ClInclude Include="matrix_device.h" />
+    <ClInclude Include="median.h" />
     <CudaCompile Include="matrix_device.cu">
       <FileType>Document</FileType>
     </CudaCompile>
@@ -148,6 +151,7 @@
     <ClCompile Include="binarize.cpp" />
     <ClCompile Include="convolution.cpp" />
     <ClCompile Include="mat_multiply.cpp" />
+    <ClCompile Include="median.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

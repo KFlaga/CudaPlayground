@@ -31,7 +31,7 @@ namespace OmniSense
         }
 
         template<typename MatrixT>
-        void ConvolveExtendedZero(const MatrixT A, const MatrixT B, MatrixT C)
+        void ConvolveExtendedIgnoreOutside(const MatrixT A, const MatrixT B, MatrixT C)
         {
             int radiusRows = B.rows / 2;
             int radiusCols = B.cols / 2;
@@ -54,7 +54,7 @@ namespace OmniSense
         {
             if (boundary == ConvolveBoundary::ExtendZero)
             {
-                ConvolveExtendedZero(A, B, C);
+                ConvolveExtendedIgnoreOutside(A, B, C);
             }
             else
             {

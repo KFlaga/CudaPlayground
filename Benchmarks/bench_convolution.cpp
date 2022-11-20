@@ -23,7 +23,6 @@ ADD_BENCHMARK(Convolution)
 			{
 			case ConvolveBoundary::Copy: return "Copy";
 			case ConvolveBoundary::ExtendZero: return "ExtendZero";
-			case ConvolveBoundary::Keep: return "Keep";
 			case ConvolveBoundary::Zero: default: return "Zero";
 			}
 		}();

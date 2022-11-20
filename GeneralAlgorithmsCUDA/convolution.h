@@ -1,17 +1,10 @@
 #pragma once
 
 #include "matrix.h"
+#include "matrix_boundary_condition.h" 
 
 namespace OmniSense
 {
-	enum class ConvolveBoundary
-	{
-		Zero,
-		Copy,
-		Keep, // dont care
-		ExtendZero
-	};
-
 	namespace CUDA
 	{
 		namespace General
