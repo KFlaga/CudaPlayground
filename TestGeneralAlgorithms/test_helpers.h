@@ -29,6 +29,8 @@ void fillRand(M& m, float min = 0.f, float max = 1.f)
 template<typename M>
 void assertEqual(M& m1, M& m2)
 {
+	ASSERT_EQ(m1.rows, m2.rows);
+	ASSERT_EQ(m1.cols, m2.cols);
 	for (int r = 0; r < m1.rows; ++r)
 	{
 		for (int c = 0; c < m2.cols; ++c)

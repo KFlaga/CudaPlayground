@@ -1,4 +1,4 @@
-#include <cuda_runtime.h>
+#include "cuda_all.h"
 #include <device_launch_parameters.h>
 
 #include "mat_multiply.h"
@@ -25,6 +25,8 @@ static __global__ void MatMulKernel(mat_fr A, mat_fr B, mat_fr C, int blockSize)
     int row = threadIdx.y;
     int col = threadIdx.x;
 
+    int Bsub_offset = blockSize * blockSize;
+
     // Loop over all the sub-matrices of A and B that are required to compute Csub
     // Multiply each pair of sub-matrices together and accumulate the results
     for (int m = 0; m < (A.cols / blockSize); ++m)
@@ -32,7 +34,7 @@ static __global__ void MatMulKernel(mat_fr A, mat_fr B, mat_fr C, int blockSize)
         // Load Asub and Bsub from device memory to shared memory
         // Each thread loads one element of each sub-matrix
         mat_fr Asub_shared{ blockSize, blockSize, blockSize, ((float*)shared_cache) + 0 };
-        mat_fc Bsub_shared{ blockSize, blockSize, blockSize, ((float*)shared_cache) + blockSize * blockSize }; // B has column-wise layout as we access it that way
+        mat_fc Bsub_shared{ blockSize, blockSize, blockSize, ((float*)shared_cache) + Bsub_offset }; // B has column-wise layout as we access it that way
         Asub_shared(row, col) = A(row + blockRow * blockSize, col + m * blockSize);
         Bsub_shared(row, col) = B(row + m * blockSize, col + blockCol * blockSize);
 

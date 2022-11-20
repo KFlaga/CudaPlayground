@@ -25,13 +25,13 @@ namespace CudaPlayground
                 return &ptr[row * stride + col];
             }
 
-            static int stride(int rows, int cols)
+            CUDA_COMMON_API static int stride(int /*rows*/, int cols)
             {
                 return cols;
             }
 
             template<typename F, typename M>
-            static void forEach(F&& f, M& m, int r1, int r2, int c1, int c2)
+            CUDA_COMMON_API static void forEach(F&& f, M& m, int r1, int r2, int c1, int c2)
             {
                 for (int c = c1; c < c2; ++c)
                 {
@@ -51,13 +51,13 @@ namespace CudaPlayground
                 return &ptr[col * stride + row];
             }
 
-            static int stride(int rows, int cols)
+            CUDA_COMMON_API static int stride(int rows, int /*cols*/)
             {
                 return rows;
             }
 
             template<typename F, typename M>
-            static void forEach(F&& f, M& m, int r1, int r2, int c1, int c2)
+            CUDA_COMMON_API static void forEach(F&& f, M& m, int r1, int r2, int c1, int c2)
             {
                 for (int r = r1; r < r2; ++r)
                 {

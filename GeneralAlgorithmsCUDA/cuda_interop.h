@@ -2,7 +2,7 @@
 
 #ifdef __NVCC__
 
-#include <cuda_runtime.h>
+#include <GeneralAlgorithmsCUDA/cuda_all.h>
 
 #define CUDA_HOST_API __host__
 #define CUDA_DEVICE_API __device__

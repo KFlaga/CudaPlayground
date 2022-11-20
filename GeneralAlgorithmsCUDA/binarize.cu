@@ -1,4 +1,4 @@
-#include <cuda_runtime.h>
+#include "cuda_all.h"
 #include <device_launch_parameters.h>
 
 #include "binarize.h"

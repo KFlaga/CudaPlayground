@@ -69,12 +69,22 @@ namespace CudaPlayground
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryExtendedBlock(
         const mat_fr host,
         const mat_fr block,
-        int blockSizeRows,
-        int blockSizeCols,
         bool copy)
     {
-        int extRows = host.rows + (block.rows-1)/2;
-        int extCols = host.cols + (block.cols-1)/2;
+        // For odd offset is symmetrical: * * *
+        //                                * X *
+        //                                * * *
+        // For even its: X *
+        //               * *
+        //
+
+        int leftOffsetCols = (block.cols - 1) / 2;
+        int rightOffsetCols = block.cols / 2;
+        int topOffsetRows = (block.rows - 1) / 2;
+        int botOffsetRows = block.rows / 2;
+
+        int extRows = host.rows + leftOffsetCols + rightOffsetCols;
+        int extCols = host.cols + topOffsetRows + botOffsetRows;
 
         size_t stride;
         float* data;
@@ -83,9 +93,9 @@ namespace CudaPlayground
 
         if (copy)
         {
-            int dataStart = (block.rows / 2) * (stride / sizeof(float)) + block.cols / 2;
+            int dataStart = topOffsetRows * ((int)stride / sizeof(float)) + leftOffsetCols;
             checkCudaErrors(cudaMemcpy2D(
-                data + dataStart, (stride + (block.cols / 2)) * sizeof(float), // extra stride is for extended block
+                data + dataStart, stride,
                 host.elements, host.stride * sizeof(float),
                 host.cols * sizeof(float), host.rows,
                 cudaMemcpyKind::cudaMemcpyHostToDevice
@@ -94,7 +104,7 @@ namespace CudaPlayground
         return mat_fr{ extRows, extCols, (int)(stride / sizeof(float)), data };
     }
 
-    inline CUDA_HOST_API void copyMemory(const mat_fr from, mat_fr& to, cudaMemcpyKind kind)
+    inline CUDA_HOST_API void copyMemory(const mat_fr from, mat_fr to, cudaMemcpyKind kind)
     {
         checkCudaErrors(cudaMemcpy2D(
             to.elements, to.stride * sizeof(float),
@@ -104,17 +114,17 @@ namespace CudaPlayground
         ));
     }
 
-    CUDA_HOST_API void copyFromDeviceMemory(const mat_fr dev, mat_fr& host)
+    CUDA_HOST_API void copyFromDeviceMemory(const mat_fr dev, mat_fr host)
     {
         copyMemory(dev, host, cudaMemcpyKind::cudaMemcpyDeviceToHost);
     }
 
-    CUDA_HOST_API void copyFromHostMemory(const mat_fr host, mat_fr& dev)
+    CUDA_HOST_API void copyFromHostMemory(const mat_fr host, mat_fr dev)
     {
         copyMemory(host, dev, cudaMemcpyKind::cudaMemcpyHostToDevice);
     }
 
-    CUDA_HOST_API void copyFromDeviceMemoryExtendedBlockPad(const mat_fr dev, const mat_fr block, mat_fr& host)
+    CUDA_HOST_API void copyFromDeviceMemoryExtendedBlockPad(const mat_fr dev, const mat_fr block, mat_fr host)
     {
         int dataStart = (block.rows / 2) * dev.stride + block.cols / 2;
         checkCudaErrors(cudaMemcpy2D(
@@ -125,7 +135,7 @@ namespace CudaPlayground
         ));
     }
 
-    inline CUDA_HOST_API void copyMemory(const mat_fc from, mat_fc& to, cudaMemcpyKind kind)
+    inline CUDA_HOST_API void copyMemory(const mat_fc from, mat_fc to, cudaMemcpyKind kind)
     {
         checkCudaErrors(cudaMemcpy2D(
             to.elements, to.stride * sizeof(float),
@@ -135,7 +145,7 @@ namespace CudaPlayground
         ));
     }
 
-    CUDA_HOST_API void copyFromDeviceMemory(const mat_fc dev, mat_fc& host)
+    CUDA_HOST_API void copyFromDeviceMemory(const mat_fc dev, mat_fc host)
     {
         copyMemory(dev, host, cudaMemcpyKind::cudaMemcpyDeviceToHost);
     }

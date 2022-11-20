@@ -1,4 +1,4 @@
-#include <cuda_runtime.h>
+#include "cuda_all.h"
 #include <device_launch_parameters.h>
 
 #include "convolution.h"
@@ -54,11 +54,11 @@ namespace General
         auto d_source = [&]() {
             if (boundary == ConvolveBoundary::ExtendZero)
             {
-                return toDeviceMemoryExtendedBlock(source, block, blockSize, blockSize, true);
+                return toDeviceMemoryExtendedBlock(source, block, true);
             }
             else
             {
-                return toDeviceMemoryPad(dest, blockSize, blockSize, true);
+                return toDeviceMemory(source, true);
             }
         }();
 
@@ -73,7 +73,7 @@ namespace General
             }
             else
             {
-                return d_dest.mat.sub(block.rows/2, block.cols/2, dest.rows - (block.rows - 1) / 2, dest.cols - (block.cols - 1) / 2);
+                return d_dest.mat.sub(block.rows/2, block.cols/2, dest.rows - (block.rows + 1) / 2, dest.cols - (block.cols + 1) / 2);
             }
         }();
 
@@ -88,8 +88,9 @@ namespace General
         }
 
         dim3 dimBlock(blockSize, blockSize);
-        dim3 dimGrid(pad(dest.cols, blockSize) / dimBlock.x, pad(dest.rows, blockSize) / dimBlock.y);
+        dim3 dimGrid(pad(d_dest_mat.cols, blockSize) / dimBlock.x, pad(d_dest_mat.rows, blockSize) / dimBlock.y);
         ConvolutionKernel_InsideBoundary KERNEL_ARGS(dimGrid, dimBlock) (d_source.mat, d_block.mat, d_dest_mat, blockSize);
+        checkCudaErrors(cudaPeekAtLastError());
 
         copyFromDeviceMemory(d_dest.mat, dest);
     }
