@@ -1,6 +1,6 @@
 #include "convolution.h"
 
-namespace OmniSense
+namespace CudaPlayground
 {
     namespace General
     {

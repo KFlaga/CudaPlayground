@@ -5,7 +5,7 @@
 #include "matrix_device.h"
 #include <memory>
 
-using namespace OmniSense;
+using namespace CudaPlayground;
 
 static __global__ void BinarizeKernel(
     mat_fr In, mat_fr Out,
@@ -29,7 +29,7 @@ static CUDA_HOST_API int findBlockSize(int elements)
     return s;
 }
 
-namespace OmniSense
+namespace CudaPlayground
 {
 namespace CUDA
 {

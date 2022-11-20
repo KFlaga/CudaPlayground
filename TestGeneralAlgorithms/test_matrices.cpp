@@ -4,7 +4,7 @@
 #include <GeneralAlgorithmsCUDA/matrix_host.h>
 #include "test_helpers.h"
 
-using namespace OmniSense;
+using namespace CudaPlayground;
 
 TEST(MatrixFunctions, multiply_small)
 {

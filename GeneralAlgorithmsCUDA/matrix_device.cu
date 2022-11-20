@@ -2,7 +2,7 @@
 #include "matrix_device.h"
 #include <utility>
 
-namespace OmniSense
+namespace CudaPlayground
 {
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemory(const mat_fr host, bool copy)
     {

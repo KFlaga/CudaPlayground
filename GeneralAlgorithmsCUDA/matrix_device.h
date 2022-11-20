@@ -4,7 +4,7 @@
 #include "cuda_interop.h"
 #include "cpp_stuff.h"
 
-namespace OmniSense
+namespace CudaPlayground
 {
     template<typename MatrixT>
     struct DeviceMatrixGuard

@@ -7,7 +7,7 @@
 #include <GeneralAlgorithmsCUDA/mat_multiply.h>
 #include <GeneralAlgorithmsCUDA/matrix_host.h>
 
-using namespace OmniSense;
+using namespace CudaPlayground;
 
 ADD_BENCHMARK(Multiply)
 {

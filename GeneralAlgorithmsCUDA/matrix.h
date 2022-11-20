@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <utility>
 
-namespace OmniSense
+namespace CudaPlayground
 {
     namespace MatrixStorages
     {

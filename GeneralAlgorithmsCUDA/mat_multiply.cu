@@ -8,7 +8,7 @@
 #include <cublas.h>
 #include <cublas_v2.h>
 
-using namespace OmniSense;
+using namespace CudaPlayground;
 
 extern __shared__ float shared_cache[];
 
@@ -68,7 +68,7 @@ static CUDA_HOST_API int findBlockSize(const mat_fr& elements)
     return 4;
 }
 
-namespace OmniSense
+namespace CudaPlayground
 {
 namespace CUDA
 {

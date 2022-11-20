@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include <vector>
 
-namespace OmniSense
+namespace CudaPlayground
 {
 	template<typename MatrixT>
 	struct MatrixDynamic : public MatrixT

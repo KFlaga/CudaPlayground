@@ -2,7 +2,7 @@
 
 #include "matrix.h"
 
-namespace OmniSense
+namespace CudaPlayground
 {
 	enum class ConvolveBoundary
 	{

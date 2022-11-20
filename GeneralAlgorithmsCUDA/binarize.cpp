@@ -1,6 +1,6 @@
 #include "mat_multiply.h"
 
-namespace OmniSense
+namespace CudaPlayground
 {
 namespace General
 {
