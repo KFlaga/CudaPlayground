@@ -1,5 +1,4 @@
 #include "cuda_all.h"
-#include <device_launch_parameters.h>
 
 #include "convolution.h"
 #include "matrix_device.h"

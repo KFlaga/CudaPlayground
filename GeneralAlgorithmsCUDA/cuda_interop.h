@@ -17,6 +17,8 @@
 
 #else
 
+#include <builtin_types.h> // CUDA
+
 #include <type_traits>
 #include <concepts>
 #include <stdexcept>
@@ -42,7 +44,7 @@
 
 #endif
 
-#ifdef __DRIVER_TYPES_H__
+#ifdef __CUDA_RUNTIME_H__
 #include <stdio.h>
 
 template <typename T>

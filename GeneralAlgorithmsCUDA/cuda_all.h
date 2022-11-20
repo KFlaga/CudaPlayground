@@ -9,6 +9,7 @@
 
 #include <cuda_runtime.h>
 #include <cublas.h>
+#include <device_launch_parameters.h>
 
 #pragma warning(default:26812)
 #pragma warning(default:26439)

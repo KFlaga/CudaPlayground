@@ -1,4 +1,4 @@
-#include <cuda_runtime.h>
+#include "cuda_all.h"
 #include "matrix_device.h"
 #include <utility>
 
@@ -20,6 +20,27 @@ namespace CudaPlayground
         }
 
         return mat_fr{ host.rows, host.cols, (int)(stride/sizeof(float)), data };
+    }
+    
+    CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryAsync(const mat_fr host, bool copy, cudaStream_t stream)
+    {
+        mat_fr dev{ host.rows, host.cols, host.stride, nullptr };
+        size_t memSize = dev.rows * dev.stride * sizeof(float);
+
+        checkCudaErrors(cudaMallocAsync(&dev.elements, memSize, stream) );
+
+        if (copy)
+        {
+            checkCudaErrors(cudaMemcpyAsync(
+                dev.elements,
+                host.elements,
+                memSize,
+                cudaMemcpyKind::cudaMemcpyHostToDevice,
+                stream
+            ));
+        }
+
+        return { dev, stream };
     }
 
     CUDA_HOST_API DeviceMatrixGuard<mat_fc> toDeviceMemory(const mat_fc host, bool copy)
@@ -65,10 +86,51 @@ namespace CudaPlayground
         }
         return mat_fr{ rows, cols, (int)(stride / sizeof(float)), data };
     }
+    
+    CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryPadAsync(
+        const mat_fr host,
+        int blockSizeRows,
+        int blockSizeCols,
+        bool copy,
+        cudaStream_t stream)
+    {
+        int rows = pad(host.rows, blockSizeRows);
+        int cols = pad(host.cols, blockSizeCols);
 
+        mat_fr dev{ rows, cols, cols, nullptr };
+        size_t memSize = dev.rows * dev.stride * sizeof(float);
+
+        checkCudaErrors(cudaMallocAsync(&dev.elements, memSize, stream));
+        checkCudaErrors(cudaMemsetAsync(dev.elements, 0, memSize, stream));
+
+        if (copy)
+        {
+            for (int r = 0; r < host.rows; ++r) {
+                checkCudaErrors(cudaMemcpyAsync(
+                    dev.elements + r*dev.stride,
+                    host.elements + r*host.stride,
+                    host.cols * sizeof(float),
+                    cudaMemcpyKind::cudaMemcpyHostToDevice,
+                    stream
+                ));
+            }
+        }
+
+        return { dev, stream };
+    }
+    
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryExtendedBlock(
         const mat_fr host,
         const mat_fr block,
+        bool copy)
+    {
+        return toDeviceMemoryExtendedBlock(host, block.rows, block.cols, copy);
+    }
+
+    CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemoryExtendedBlock(
+        const mat_fr host,
+        int blockRows,
+        int blockCols,
         bool copy)
     {
         // For odd offset is symmetrical: * * *
@@ -78,10 +140,10 @@ namespace CudaPlayground
         //               * *
         //
 
-        int leftOffsetCols = (block.cols - 1) / 2;
-        int rightOffsetCols = block.cols / 2;
-        int topOffsetRows = (block.rows - 1) / 2;
-        int botOffsetRows = block.rows / 2;
+        int leftOffsetCols = (blockCols - 1) / 2;
+        int rightOffsetCols = blockCols / 2;
+        int topOffsetRows = (blockRows - 1) / 2;
+        int botOffsetRows = blockRows / 2;
 
         int extRows = host.rows + leftOffsetCols + rightOffsetCols;
         int extCols = host.cols + topOffsetRows + botOffsetRows;
@@ -148,5 +210,37 @@ namespace CudaPlayground
     CUDA_HOST_API void copyFromDeviceMemory(const mat_fc dev, mat_fc host)
     {
         copyMemory(dev, host, cudaMemcpyKind::cudaMemcpyDeviceToHost);
+    }
+
+    inline CUDA_HOST_API void copyMemoryAsync(const mat_fr from, mat_fr to, cudaMemcpyKind kind, cudaStream_t stream)
+    {
+        if (from.stride == to.stride)
+        {
+            checkCudaErrors(cudaMemcpyAsync(
+                to.elements,
+                from.elements,
+                from.cols * sizeof(float),
+                kind,
+                stream
+            ));
+        }
+        else
+        {
+            for (int r = 0; r < to.rows; ++r)
+            {
+                checkCudaErrors(cudaMemcpyAsync(
+                    to.elements + r * to.stride,
+                    from.elements + r * from.stride,
+                    from.cols * sizeof(float),
+                    kind,
+                    stream
+                ));
+            }
+        }
+    }
+
+    CUDA_HOST_API void copyFromDeviceMemoryAsync(const mat_fr dev, mat_fr host, cudaStream_t stream)
+    {
+        copyMemoryAsync(dev, host, cudaMemcpyKind::cudaMemcpyDeviceToHost, stream);
     }
 }

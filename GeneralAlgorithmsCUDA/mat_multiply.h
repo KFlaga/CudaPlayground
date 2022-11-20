@@ -1,6 +1,8 @@
 #pragma once
 
-#include "matrix.h"
+#include <GeneralAlgorithmsCUDA/matrix.h>
+#include <GeneralAlgorithmsCUDA/cuda_interop.h>
+#include <future>
 
 namespace CudaPlayground
 {
@@ -10,6 +12,9 @@ namespace CudaPlayground
 		{
 			CUDA_HOST_API void MatMul(const mat_fr A, const mat_fr B, mat_fr C);
 			CUDA_HOST_API void MatMul(const mat_fc A, const mat_fc B, mat_fc C);
+
+			// Result of async call (matrix C) will be valid when stream is synchronized
+			CUDA_HOST_API void MatMulAsync(const mat_fr A, const mat_fr B, mat_fr C, cudaStream_t stream);
 		}
 	}
 

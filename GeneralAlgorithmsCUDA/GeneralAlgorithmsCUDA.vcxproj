@@ -44,13 +44,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\int\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);$(CUDA_PATH)\include</IncludePath>
     <LibraryPath>$(CudaToolkitLibDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\int\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);$(CUDA_PATH)\include</IncludePath>
     <LibraryPath>$(CudaToolkitLibDir)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -128,14 +128,18 @@
   <ItemGroup>
     <CudaCompile Include="binarize.cu" />
     <CudaCompile Include="convolution.cu" />
+    <CudaCompile Include="cuda_stream.cu" />
     <CudaCompile Include="mat_multiply.cu" />
+    <CudaCompile Include="multi_block_filter.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binarize.h" />
     <ClInclude Include="convolution.h" />
     <ClInclude Include="cpp_stuff.h" />
     <ClInclude Include="cuda_all.h" />
+    <ClInclude Include="cuda_stream.h" />
     <ClInclude Include="matrix_device.h" />
+    <ClInclude Include="multi_block_filter.h" />
     <CudaCompile Include="matrix_device.cu">
       <FileType>Document</FileType>
     </CudaCompile>

@@ -2,6 +2,7 @@
 #include <GeneralAlgorithmsCUDA/matrix.h>
 #include <GeneralAlgorithmsCUDA/mat_multiply.h>
 #include <GeneralAlgorithmsCUDA/matrix_host.h>
+#include <GeneralAlgorithmsCUDA/cuda_stream.h>
 #include "test_helpers.h"
 
 using namespace CudaPlayground;
@@ -48,5 +49,25 @@ TEST(MatrixFunctions, multiply_uneven)
 
 	CUDA::General::MatMul(A, B, C_cuda);
 	General::MatMul<mat_fr>(A, B, C_cpu);
+	assertEqual(C_cuda, C_cpu);
+}
+
+TEST(MatrixFunctions, multiply_async)
+{
+	auto A = MatrixDynamic<mat_fr>(24, 16);
+	auto B = MatrixDynamic<mat_fr>(16, 32);
+	auto C_cuda = MatrixDynamic<mat_fr>(24, 32);
+	auto C_cpu = MatrixDynamic<mat_fr>(24, 32);
+
+	fill(A, 1);
+	fill(B, 1);
+
+	CudaStream stream{};
+
+	CUDA::General::MatMulAsync(A, B, C_cuda, stream);
+	General::MatMul<mat_fr>(A, B, C_cpu);
+
+	stream.sync();
+
 	assertEqual(C_cuda, C_cpu);
 }

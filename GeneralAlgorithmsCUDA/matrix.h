@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cuda_interop.h"
+#include <GeneralAlgorithmsCUDA/cuda_interop.h>
 #include <cstdint>
 #include <utility>
 
@@ -41,6 +41,11 @@ namespace CudaPlayground
                     }
                 }
             }
+
+            CUDA_COMMON_API static int size(int rows, int /*cols*/, int stride)
+            {
+                return rows * stride;
+            }
         };
 
         struct ColumnMajor
@@ -67,6 +72,11 @@ namespace CudaPlayground
                     }
                 }
             }
+
+            CUDA_COMMON_API static int size(int /*rows*/, int cols, int stride)
+            {
+                return cols * stride;
+            }
         };
     }
 
@@ -92,6 +102,11 @@ namespace CudaPlayground
         {
             OMS_ASSERT(row < rows && col < cols, "Matrix::operator()");
             return *StorageType::get(elements, row, col, stride);
+        }
+
+        CUDA_COMMON_API int memSize() const
+        {
+            return StorageType::size(rows, cols, stride);
         }
 
         CUDA_COMMON_API Matrix sub(int row, int col, int size) const

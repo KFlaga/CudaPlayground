@@ -1,5 +1,4 @@
 #include "cuda_all.h"
-#include <device_launch_parameters.h>
 
 #include "mat_multiply.h"
 #include "matrix_device.h"
@@ -91,6 +90,23 @@ namespace General
         MatMulKernel KERNEL_ARGS(dimGrid, dimBlock, sharedMemoryNeeded) (d_A, d_B, d_C, blockSize);
 
         copyFromDeviceMemory(d_C.mat, C);
+    }
+
+    void MatMulAsync(const mat_fr A, const mat_fr B, mat_fr C, cudaStream_t stream)
+    {
+        int blockSize = findBlockSize(C);
+
+        auto d_A = toDeviceMemoryPadAsync(A, blockSize, blockSize, true, stream);
+        auto d_B = toDeviceMemoryPadAsync(B, blockSize, blockSize, true, stream);
+        auto d_C = toDeviceMemoryPadAsync(C, blockSize, blockSize, false, stream);
+
+        int sharedMemoryNeeded = blockSize * blockSize * 2 * sizeof(float);
+
+        dim3 dimBlock(blockSize, blockSize);
+        dim3 dimGrid(d_C.mat.cols / dimBlock.x, d_C.mat.rows / dimBlock.y);
+        MatMulKernel KERNEL_ARGS(dimGrid, dimBlock, sharedMemoryNeeded, stream) (d_A, d_B, d_C, blockSize);
+
+        copyFromDeviceMemoryAsync(d_C.mat, C, stream);
     }
 
     void MatMul(const mat_fc A, const mat_fc B, mat_fc C)
