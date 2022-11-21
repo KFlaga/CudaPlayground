@@ -44,7 +44,7 @@ void registerBench(std::string name, std::function<void()> fun)
 }
 
 
-int main()
+int main() 
 {
-	BenchRegistry::instance().run();
+	BenchRegistry::instance().run("MultiplyAsync");
 }

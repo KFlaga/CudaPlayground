@@ -60,6 +60,9 @@ static __global__ void MatMulKernel(mat_fr A, mat_fr B, mat_fr C, int blockSize)
 
 static CUDA_HOST_API int findBlockSize(const mat_fr& elements)
 {
+    if (elements.rows * elements.cols >= 2400) {
+        return 16;
+    }
     if (elements.rows * elements.cols >= 600) {
         return 12;
     }

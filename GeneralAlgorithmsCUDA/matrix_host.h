@@ -6,7 +6,7 @@
 
 namespace CudaPlayground
 {
-	template<typename MatrixT>
+	template<typename MatrixT, template<typename...> class Allocator = std::allocator>
 	struct MatrixDynamic : public MatrixT
 	{
 		MOVE_ONLY_CLASS(MatrixDynamic);
@@ -51,6 +51,6 @@ namespace CudaPlayground
 		}
 
 	private:
-		std::vector<typename MatrixT::value_type> data;
+		std::vector<typename MatrixT::value_type, Allocator<typename MatrixT::value_type>> data;
 	};
 }

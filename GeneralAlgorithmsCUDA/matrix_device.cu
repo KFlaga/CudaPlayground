@@ -219,7 +219,7 @@ namespace CudaPlayground
             checkCudaErrors(cudaMemcpyAsync(
                 to.elements,
                 from.elements,
-                from.cols * sizeof(float),
+                to.cols * sizeof(float),
                 kind,
                 stream
             ));
@@ -231,7 +231,7 @@ namespace CudaPlayground
                 checkCudaErrors(cudaMemcpyAsync(
                     to.elements + r * to.stride,
                     from.elements + r * from.stride,
-                    from.cols * sizeof(float),
+                    to.cols * sizeof(float),
                     kind,
                     stream
                 ));

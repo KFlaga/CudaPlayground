@@ -131,6 +131,7 @@
     <CudaCompile Include="cuda_stream.cu" />
     <CudaCompile Include="mat_multiply.cu" />
     <CudaCompile Include="multi_block_filter.cu" />
+    <CudaCompile Include="pinned_allocator.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binarize.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="cuda_stream.h" />
     <ClInclude Include="matrix_device.h" />
     <ClInclude Include="multi_block_filter.h" />
+    <ClInclude Include="pinned_allocator.h" />
     <CudaCompile Include="matrix_device.cu">
       <FileType>Document</FileType>
     </CudaCompile>
