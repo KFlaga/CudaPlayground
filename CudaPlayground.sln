@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Benchmarks", "Benchmarks\Be
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestGeneralAlgorithms", "TestGeneralAlgorithms\TestGeneralAlgorithms.vcxproj", "{9A575CD0-27C3-4B31-8C5A-D9622CE1B83E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Playground", "Playground\Playground.vcxproj", "{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +41,12 @@ Global
 		{9A575CD0-27C3-4B31-8C5A-D9622CE1B83E}.Release|x64.Build.0 = Release|x64
 		{9A575CD0-27C3-4B31-8C5A-D9622CE1B83E}.Release|x86.ActiveCfg = Release|Win32
 		{9A575CD0-27C3-4B31-8C5A-D9622CE1B83E}.Release|x86.Build.0 = Release|Win32
+		{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}.Debug|x64.ActiveCfg = Debug|x64
+		{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}.Debug|x64.Build.0 = Debug|x64
+		{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}.Debug|x86.ActiveCfg = Debug|x64
+		{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}.Release|x64.ActiveCfg = Release|x64
+		{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}.Release|x64.Build.0 = Release|x64
+		{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

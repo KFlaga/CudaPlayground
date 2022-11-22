@@ -1,6 +1,7 @@
 #include "nanobench.h"
 #include "bench_helpers.h"
 #include <regex>
+#include <iostream>
 
 struct BenchmarkEntry
 {
@@ -47,4 +48,5 @@ void registerBench(std::string name, std::function<void()> fun)
 int main() 
 {
 	BenchRegistry::instance().run("MultiplyAsync");
+	std::cin.get();
 }

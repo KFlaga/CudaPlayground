@@ -11,19 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BCC64496-B71C-4CBD-A86D-63B6F43D3DC1}</ProjectGuid>
-    <RootNamespace>GeneralAlgorithmsCUDA</RootNamespace>
+    <ProjectGuid>{7FF638AD-E74C-4369-BC13-AEC182DFF3A1}</ProjectGuid>
+    <RootNamespace>Playground</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -45,23 +45,21 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\int\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);$(CUDA_PATH)\include</IncludePath>
-    <LibraryPath>$(CudaToolkitLibDir)</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(CudaToolkitLibDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\int\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);$(CUDA_PATH)\include</IncludePath>
-    <LibraryPath>$(CudaToolkitLibDir)</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(CudaToolkitLibDir)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>26812;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -70,23 +68,9 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_86,sm_86;compute_75,sm_75;compute_61,sm_61;</CodeGeneration>
-      <NvccCompilation>compile</NvccCompilation>
       <Keep>true</Keep>
-      <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
-      <Include>$(CudaToolkitDir)include</Include>
+      <CodeGeneration>compute_86,sm_86;compute_75,sm_75;compute_61,sm_61;</CodeGeneration>
     </CudaCompile>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <CudaLink>
-      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
-    </CudaLink>
-    <Lib>
-      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -107,53 +91,17 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_86,sm_86;compute_75,sm_75;compute_61,sm_61;</CodeGeneration>
-      <NvccCompilation>compile</NvccCompilation>
       <Keep>true</Keep>
-      <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
-      <Include>$(CudaToolkitDir)include</Include>
+      <CodeGeneration>compute_86,sm_86;compute_75,sm_75;compute_61,sm_61;</CodeGeneration>
     </CudaCompile>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <CudaLink>
-      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
-    </CudaLink>
-    <Lib>
-      <AdditionalDependencies>cudart_static.lib;cublas.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="binarize.cu" />
-    <CudaCompile Include="convolution.cu" />
-    <CudaCompile Include="cuda_stream.cu" />
-    <CudaCompile Include="mat_multiply.cu" />
-    <CudaCompile Include="multi_block_filter.cu" />
-    <CudaCompile Include="pinned_allocator.cu" />
+    <CudaCompile Include="kernel.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="binarize.h" />
-    <ClInclude Include="convolution.h" />
-    <ClInclude Include="cpp_stuff.h" />
-    <ClInclude Include="cuda_all.h" />
-    <ClInclude Include="cuda_stream.h" />
-    <ClInclude Include="matrix_device.h" />
-    <ClInclude Include="multi_block_filter.h" />
-    <ClInclude Include="pinned_allocator.h" />
-    <CudaCompile Include="matrix_device.cu">
-      <FileType>Document</FileType>
-    </CudaCompile>
-    <ClInclude Include="matrix_host.h" />
-    <ClInclude Include="mat_multiply.h" />
-    <ClInclude Include="matrix.h" />
-    <ClInclude Include="cuda_interop.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="binarize.cpp" />
-    <ClCompile Include="convolution.cpp" />
-    <ClCompile Include="mat_multiply.cpp" />
+    <ProjectReference Include="..\GeneralAlgorithmsCUDA\GeneralAlgorithmsCUDA.vcxproj">
+      <Project>{bcc64496-b71c-4cbd-a86d-63b6f43d3dc1}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
