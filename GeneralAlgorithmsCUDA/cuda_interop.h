@@ -3,6 +3,8 @@
 #ifdef __NVCC__
 
 #include <GeneralAlgorithmsCUDA/cuda_all.h>
+#include <assert.h>
+#include <math.h>
 
 #define CUDA_HOST_API __host__
 #define CUDA_DEVICE_API __device__
@@ -11,7 +13,7 @@
 #define CONCEPT(x) typename
 #define CONCEPT_DECLARE(x)
 
-#define OMS_ASSERT(x, y) 
+#define OMS_ASSERT(x, y) assert(x)
 
 #define KERNEL_ARGS(...) <<< __VA_ARGS__ >>>
 

@@ -70,6 +70,7 @@
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <Keep>true</Keep>
       <CodeGeneration>compute_86,sm_86;compute_75,sm_75;compute_61,sm_61;</CodeGeneration>
+      <AdditionalOptions>-std=c++17 %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,6 +94,7 @@
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <Keep>true</Keep>
       <CodeGeneration>compute_86,sm_86;compute_75,sm_75;compute_61,sm_61;</CodeGeneration>
+      <AdditionalOptions>-std=c++17 %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

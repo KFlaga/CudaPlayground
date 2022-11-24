@@ -45,6 +45,7 @@
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(CudaToolkitLibDir);</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="test_bilateral.cpp" />
     <ClCompile Include="test_binarize.cpp" />
     <ClCompile Include="test_convolution.cpp" />
     <ClCompile Include="test_matrices.cpp" />

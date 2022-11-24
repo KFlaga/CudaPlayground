@@ -75,6 +75,7 @@
       <Keep>true</Keep>
       <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
       <Include>$(CudaToolkitDir)include</Include>
+      <AdditionalOptions>-std=c++17 %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -112,6 +113,7 @@
       <Keep>true</Keep>
       <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
       <Include>$(CudaToolkitDir)include</Include>
+      <AdditionalOptions>-std=c++17 %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -126,6 +128,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="bilateral_filter.cu" />
     <CudaCompile Include="binarize.cu" />
     <CudaCompile Include="convolution.cu" />
     <CudaCompile Include="cuda_stream.cu" />
@@ -134,6 +137,7 @@
     <CudaCompile Include="pinned_allocator.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bilateral_filter.h" />
     <ClInclude Include="binarize.h" />
     <ClInclude Include="convolution.h" />
     <ClInclude Include="cpp_stuff.h" />
@@ -142,6 +146,7 @@
     <ClInclude Include="matrix_device.h" />
     <ClInclude Include="multi_block_filter.h" />
     <ClInclude Include="pinned_allocator.h" />
+    <ClInclude Include="smoothing_kernel.h" />
     <CudaCompile Include="matrix_device.cu">
       <FileType>Document</FileType>
     </CudaCompile>
@@ -151,6 +156,7 @@
     <ClInclude Include="cuda_interop.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bilateral_filter.cpp" />
     <ClCompile Include="binarize.cpp" />
     <ClCompile Include="convolution.cpp" />
     <ClCompile Include="mat_multiply.cpp" />
