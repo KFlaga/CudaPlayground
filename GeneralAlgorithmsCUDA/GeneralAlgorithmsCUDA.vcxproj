@@ -139,6 +139,7 @@
     <ClInclude Include="cpp_stuff.h" />
     <ClInclude Include="cuda_all.h" />
     <ClInclude Include="cuda_stream.h" />
+    <ClInclude Include="dct.h" />
     <ClInclude Include="matrix_device.h" />
     <ClInclude Include="multi_block_filter.h" />
     <ClInclude Include="pinned_allocator.h" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="binarize.cpp" />
     <ClCompile Include="convolution.cpp" />
+    <ClCompile Include="dct.cpp" />
     <ClCompile Include="mat_multiply.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -81,6 +81,40 @@ namespace CudaPlayground
     }
 
     template<typename T, CONCEPT(MatrixStorages::MatrixStorage) StorageType = MatrixStorages::RowMajor>
+    struct Column
+    {
+        using value_type = T;
+        using storage_type = StorageType;
+
+        int size;
+        int stride;
+        T* elements;
+
+        CUDA_COMMON_API T& operator()(int i)
+        {
+            OMS_ASSERT(i < size, "Vector::operator()");
+            return *StorageType::get(elements, i, 0, stride);
+        }
+    };
+
+    template<typename T, CONCEPT(MatrixStorages::MatrixStorage) StorageType = MatrixStorages::RowMajor>
+    struct Row
+    {
+        using value_type = T;
+        using storage_type = StorageType;
+
+        int size;
+        int stride;
+        T* elements;
+
+        CUDA_COMMON_API T& operator()(int i)
+        {
+            OMS_ASSERT(i < size, "Vector::operator()");
+            return *StorageType::get(elements, 0, i, stride);
+        }
+    };
+
+    template<typename T, CONCEPT(MatrixStorages::MatrixStorage) StorageType = MatrixStorages::RowMajor>
     struct Matrix
     {
         using value_type = T;
@@ -119,6 +153,18 @@ namespace CudaPlayground
         {
             OMS_ASSERT(row < rows && col < cols && row+rowSize <= rows && col+colSize <= cols, "Matrix::sub()");
             return Matrix{ rowSize, colSize, stride, StorageType::get(elements, row, col, stride) };
+        }
+
+        CUDA_COMMON_API Row<T, StorageType> row(int r) const
+        {
+            OMS_ASSERT(r < rows, "Matrix::row()");
+            return Row<T, StorageType>{ cols, stride, StorageType::get(elements, r, 0, stride) };
+        }
+
+        CUDA_COMMON_API Column<T, StorageType> column(int c) const
+        {
+            OMS_ASSERT(c < cols, "Matrix::column()");
+            return Column<T, StorageType>{ rows, stride, StorageType::get(elements, 0, c, stride) };
         }
 
         CUDA_COMMON_API Matrix sameSize() const
