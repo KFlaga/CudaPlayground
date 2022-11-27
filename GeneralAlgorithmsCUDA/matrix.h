@@ -95,6 +95,12 @@ namespace CudaPlayground
             OMS_ASSERT(i < size, "Vector::operator()");
             return *StorageType::get(elements, i, 0, stride);
         }
+
+        CUDA_COMMON_API T operator()(int i) const
+        {
+            OMS_ASSERT(i < size, "Vector::operator()");
+            return *StorageType::get(elements, i, 0, stride);
+        }
     };
 
     template<typename T, CONCEPT(MatrixStorages::MatrixStorage) StorageType = MatrixStorages::RowMajor>
@@ -108,6 +114,12 @@ namespace CudaPlayground
         T* elements;
 
         CUDA_COMMON_API T& operator()(int i)
+        {
+            OMS_ASSERT(i < size, "Vector::operator()");
+            return *StorageType::get(elements, 0, i, stride);
+        }
+
+        CUDA_COMMON_API T operator()(int i) const
         {
             OMS_ASSERT(i < size, "Vector::operator()");
             return *StorageType::get(elements, 0, i, stride);

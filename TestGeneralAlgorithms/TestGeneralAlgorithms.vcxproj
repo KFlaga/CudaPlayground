@@ -47,6 +47,7 @@
   <ItemGroup>
     <ClCompile Include="test_binarize.cpp" />
     <ClCompile Include="test_convolution.cpp" />
+    <ClCompile Include="test_dct.cpp" />
     <ClCompile Include="test_matrices.cpp" />
   </ItemGroup>
   <ItemGroup>

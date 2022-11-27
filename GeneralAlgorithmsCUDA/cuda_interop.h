@@ -1,5 +1,7 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
+
 #ifdef __NVCC__
 
 #include <GeneralAlgorithmsCUDA/cuda_all.h>
@@ -22,6 +24,7 @@
 #include <type_traits>
 #include <concepts>
 #include <stdexcept>
+#include <cmath>
 
 #define CUDA_HOST_API
 #define CUDA_DEVICE_API

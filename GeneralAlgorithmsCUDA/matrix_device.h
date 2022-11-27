@@ -59,6 +59,11 @@ namespace CudaPlayground
         return ((x + (alignment - 1)) / alignment) * alignment;
     }
 
+    inline CUDA_COMMON_API int div_ceil(int x, int alignment)
+    {
+        return ((x + (alignment - 1)) / alignment);
+    }
+
     CUDA_HOST_API DeviceMatrixGuard<mat_fr> toDeviceMemory(const mat_fr host, bool copy);
     CUDA_HOST_API DeviceMatrixGuard<mat_fc> toDeviceMemory(const mat_fc host, bool copy);
 

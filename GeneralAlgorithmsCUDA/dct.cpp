@@ -1,4 +1,4 @@
-#include "mat_multiply.h"
+#include "dct.h"
 #include <malloc.h>
 #include <cmath>
 
@@ -9,63 +9,42 @@ namespace General
 
 // DCT II, from wikipedia
 template<typename VectorT>
-void DCT_simple_1d(const VectorT In, VectorT Out)
+static void DCT_simple_1d(const VectorT In, VectorT Out)
 {
-	float F = M_PI / In.size;
+	float scaling = std::sqrtf(2.0f / (float)In.size);
+
+	float F = (float)M_PI / In.size;
 	for (int i = 0; i < In.size; ++i)
 	{
-		float x = 0.0f;
+		float x = 0;
 		for (int k = 0; k < In.size; k++)
 		{
 			x += In(k) * std::cosf((k + 0.5f) * i * F);
 		}
-		Out(i) = x;
+		Out(i) = x * scaling;
 	}
 }
 
 // DCT III
 template<typename VectorT>
-void IDCT_simple_1d(const VectorT In, VectorT Out)
+static void IDCT_simple_1d(const VectorT In, VectorT Out)
 {
-	float F = M_PI / In.size;
+	float scaling = std::sqrtf(2.0f / (float)In.size);
+
+	float F = (float)M_PI / In.size;
 	for (int i = 0; i < In.size; ++i)
 	{
 		float x = In(0) * 0.5f;
-		for (int k = 0; k < In.size; k++)
+		for (int k = 1; k < In.size; k++)
 		{
 			x += In(k) * std::cosf(k * (i + 0.5f) * F);
 		}
-		Out(i) = x;
+		Out(i) = x * scaling;
 	}
 }
 
-template<typename DCTFunc>
-void DCT_2d_col_row(const mat_fr In, mat_fr Out, DCTFunc dct_1d)
-{
-	// Vertical pass
-	for (int c = 0; c < In.cols; ++c)
-	{
-		auto columnIn = In.column(c);
-		auto columnOut = Out.column(c);
-		dct_1d(columnIn, columnOut);
-	}
-
-	// Horizontal pass
-	float* tempMem = (float*)alloca(Out.cols * sizeof(float));
-	Row<float, typename mat_fr::storage_type> temp{ Out.cols, 1, tempMem };
-
-	for (int r = 0; r < In.rows; ++r)
-	{
-		auto rowIn = Out.row(r);
-		dct_1d(rowIn, temp);
-
-		auto rowOut = Out.row(r);
-		std::memcpy(rowOut.elements, temp.elements, temp.size * sizeof(float));
-	}
-}
-
-template<typename DCTFunc>
-void DCT_2d_col_row(const mat_fc In, mat_fc Out, DCTFunc dct_1d)
+template<typename MatrixT, typename DCTFunc>
+static void DCT_2d_col_row(const MatrixT In, MatrixT Out, DCTFunc dct_1d)
 {
 	// Horizontal pass
 	for (int r = 0; r < In.rows; ++r)
@@ -77,7 +56,7 @@ void DCT_2d_col_row(const mat_fc In, mat_fc Out, DCTFunc dct_1d)
 
 	// Vertical pass
 	float* tempMem = (float*)alloca(Out.rows * sizeof(float));
-	Column<float, typename mat_fc::storage_type> temp{ Out.rows, 1, tempMem };
+	decltype(Out.column(0)) temp{ Out.rows, 1, tempMem };
 
 	for (int c = 0; c < In.cols; ++c)
 	{
@@ -85,21 +64,23 @@ void DCT_2d_col_row(const mat_fc In, mat_fc Out, DCTFunc dct_1d)
 		dct_1d(columnIn, temp);
 
 		auto columnOut = Out.column(c);
-		std::memcpy(columnOut.elements, temp.elements, temp.size * sizeof(float));
+		for (int k = 0; k < temp.size; ++k)
+		{
+			columnOut(k) = temp.elements[k];
+		}
 	}
 }
-
 
 template<typename MatrixT>
 void DCT_2d_simple(const MatrixT In, MatrixT Out)
 {
-	DCT_2d_col_row(In, Out, DCT_simple_1d);
+	DCT_2d_col_row(In, Out, [](auto vecIn, auto vecOut) { DCT_simple_1d(vecIn, vecOut); });
 }
 
 template<typename MatrixT>
 void IDCT_2d_simple(const MatrixT In, MatrixT Out)
 {
-	DCT_2d_col_row(In, Out, IDCT_simple_1d);
+	DCT_2d_col_row(In, Out, [](auto vecIn, auto vecOut) { IDCT_simple_1d(vecIn, vecOut); });
 }
 
 template void DCT_2d_simple(const mat_fr In, mat_fr Out);

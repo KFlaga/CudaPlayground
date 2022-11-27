@@ -129,6 +129,7 @@
     <CudaCompile Include="binarize.cu" />
     <CudaCompile Include="convolution.cu" />
     <CudaCompile Include="cuda_stream.cu" />
+    <CudaCompile Include="dct.cu" />
     <CudaCompile Include="mat_multiply.cu" />
     <CudaCompile Include="multi_block_filter.cu" />
     <CudaCompile Include="pinned_allocator.cu" />
