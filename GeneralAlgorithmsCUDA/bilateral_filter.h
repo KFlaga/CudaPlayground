@@ -10,6 +10,7 @@ namespace CudaPlayground
 		namespace General
 		{
 			CUDA_HOST_API void BilateralFilter(const mat_fr In, mat_fr Out, int radius, SmoothingKernel filter);
+			CUDA_HOST_API void BilateralFilter_2(const mat_fr In, mat_fr Out, int radius, SmoothingKernel filter);
 		}
 	}
 

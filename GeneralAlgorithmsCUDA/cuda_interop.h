@@ -13,7 +13,11 @@
 #define CONCEPT(x) typename
 #define CONCEPT_DECLARE(x)
 
-#define OMS_ASSERT(x, y) assert(x)
+#ifdef NDEBUG
+#define OMS_ASSERT(x, y)
+#else
+#define OMS_ASSERT(cond, msg) assert(x)
+#endif
 
 #define KERNEL_ARGS(...) <<< __VA_ARGS__ >>>
 
@@ -41,6 +45,7 @@
 // This is for Visual Studio to quiet intelisense complaints
 // CUDA code is always compiled with __NVCC__, so its not a problem
 #define __syncthreads()
+#define __launch_bounds__(x)
 
 #define KERNEL_ARGS(...)
 

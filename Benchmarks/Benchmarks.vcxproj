@@ -155,6 +155,7 @@
     <ClInclude Include="nanobench.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bench_bilateral.cpp" />
     <ClCompile Include="bench_binarize.cpp" />
     <ClCompile Include="bench_convolution.cpp" />
     <ClCompile Include="bench_multiply.cpp" />

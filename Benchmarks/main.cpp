@@ -47,6 +47,6 @@ void registerBench(std::string name, std::function<void()> fun)
 
 int main() 
 {
-	BenchRegistry::instance().run("MultiplyAsync");
+	BenchRegistry::instance().run("BilateralFilter");
 	std::cin.get();
 }

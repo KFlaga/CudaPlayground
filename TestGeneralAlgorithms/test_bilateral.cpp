@@ -8,8 +8,8 @@ using namespace CudaPlayground;
 
 TEST(BilateralFilter, fixed_triangle_triangle)
 {
-	TriangleSmoothing ti{ 3.0f, 1.0f / 3.0f };
-	TriangleSmoothing tx{ 2.0f, 1.0f / 2.0f };
+	TriangleSmoothing ti{ 3.0f };
+	TriangleSmoothing tx{ 2.0f };
 
 	MultiSmoothing<TriangleSmoothing, TriangleSmoothing> tts{ ti, tx };
 	SmoothingKernel smoothing{ tts };
@@ -54,8 +54,8 @@ TEST(BilateralFilter, fixed_triangle_triangle)
 	General::BilateralFilter<mat_fr>(A, C_cpu, 1, smoothing);
 	CUDA::General::BilateralFilter(A, C_cuda, 1, smoothing);
 
-	assertEqual(C_cpu, C_exp, 1e-5f);
-	assertEqual(C_cuda, C_exp, 1e-5f);
+	assertEqual(C_cpu, C_exp, 1e-3f);
+	assertEqual(C_cuda, C_exp, 1e-3f);
 }
 
 TEST(BilateralFilter, gauss_gauss)
@@ -71,5 +71,5 @@ TEST(BilateralFilter, gauss_gauss)
 
 	CUDA::General::BilateralFilter(A, C_cuda, 7, smoothing);
 	General::BilateralFilter<mat_fr>(A, C_cpu, 7, smoothing);
-	assertEqual(C_cpu, C_cuda, 1e-5f);
+	assertEqual(C_cpu, C_cuda, 1e-3f);
 }
