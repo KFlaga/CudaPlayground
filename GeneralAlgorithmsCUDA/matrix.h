@@ -222,4 +222,6 @@ namespace CudaPlayground
 
     using mat_fr = Matrix<float, MatrixStorages::RowMajor>;
     using mat_fc = Matrix<float, MatrixStorages::ColumnMajor>;
+    using mat_u8r = Matrix<uint8_t, MatrixStorages::RowMajor>;
+    using mat_u8c = Matrix<uint8_t, MatrixStorages::ColumnMajor>;
 }

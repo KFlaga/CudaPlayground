@@ -1,7 +1,7 @@
 #pragma once
 
-#include "cpp_stuff.h"
-#include "matrix.h"
+#include <GeneralAlgorithmsCUDA/cpp_stuff.h>
+#include <GeneralAlgorithmsCUDA/matrix.h>
 #include <vector>
 
 namespace CudaPlayground
@@ -52,5 +52,41 @@ namespace CudaPlayground
 
 	private:
 		std::vector<typename MatrixT::value_type, Allocator<typename MatrixT::value_type>> data;
+	};
+
+	template<typename MatrixT, template<typename...> class Allocator = std::allocator>
+	struct MatrixExtMem : public MatrixT
+	{
+		MOVE_ONLY_CLASS(MatrixExtMem);
+
+		MatrixExtMem(int rows, int cols, int stride, std::unique_ptr<uint8_t, void(*)(void*)> mem)
+			: MatrixT{ rows, cols, stride, (typename MatrixT::value_type*)mem.get() }
+			, data(std::move(mem))
+		{
+		}
+
+		MatrixExtMem(MatrixExtMem&& other)
+			: MatrixT((MatrixT)other)
+			, data(std::move(other.data))
+		{
+		}
+
+		MatrixExtMem& operator=(MatrixExtMem&& other)
+		{
+			MatrixT::rows = other.rows; other.rows = 0;
+			MatrixT::cols = other.cols; other.cols = 0;
+			MatrixT::stride = other.stride; other.stride = 0;
+			data = std::move(other.data);
+			MatrixT::elements = (typename MatrixT::value_type*)data.get();
+			return *this;
+		}
+
+		operator MatrixT () const
+		{
+			return MatrixT{ MatrixT::rows, MatrixT::cols, MatrixT::stride, (typename MatrixT::value_type*)data.get() };
+		}
+
+	private:
+		std::unique_ptr<uint8_t, void(*)(void*)> data;
 	};
 }
