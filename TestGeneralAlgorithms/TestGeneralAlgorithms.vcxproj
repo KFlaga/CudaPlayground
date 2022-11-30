@@ -49,6 +49,7 @@
     <ClCompile Include="test_convolution.cpp" />
     <ClCompile Include="test_dct.cpp" />
     <ClCompile Include="test_matrices.cpp" />
+    <ClCompile Include="test_transpose.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeneralAlgorithmsCUDA\GeneralAlgorithmsCUDA.vcxproj">

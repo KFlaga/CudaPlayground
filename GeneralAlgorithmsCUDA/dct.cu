@@ -47,6 +47,36 @@ struct DCT_III
     }
 };
 
+#pragma hd_warning_disable
+const mat_fr DCT_LUT8 = []() {
+    static float lut[64];
+    mat_fr X{ 8, 8, 8, lut };
+    X.forEach([](int i, int k, float& x)
+    {
+        x = 4.0f * std::cosf((k + 0.5f) * i * (float)M_PI / 8.0f);
+    });
+    return X;
+}();
+
+#pragma hd_warning_disable
+const mat_fr IDCT_LUT8 = []() {
+    static float lut[64];
+    mat_fr X{ 8, 8, 8, lut };
+    X.forEach([](int i, int k, float& x)
+    {
+        if (i == 0)
+        {
+            x = 2.0f;
+        }
+        else
+        {
+            x = 4.0f * std::cosf(k * (i * 0.5f) * (float)M_PI / 8.0f);
+        }
+    });
+    return X;
+}();
+
+
 // Each thread computes single cell, one block per column/row, block have size of (1,N)
 template<typename DCT_X, typename V1, typename V2>
 static __device__ void CUDA_DCT_simple_1d_v1(V1 In, V2 Out, int blockSize)
